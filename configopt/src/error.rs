@@ -5,6 +5,7 @@ use std::{
     process,
 };
 use structopt::clap::{Error as ClapError, ErrorKind as ClapErrorKind};
+use toml::de::Error as TomlError;
 
 #[derive(Debug)]
 pub enum Error {
@@ -12,6 +13,7 @@ pub enum Error {
     ConfigFile(PathBuf, IoError),
     ExpectedError(ClapError),
     Clap(ClapError),
+    Toml(TomlError),
 }
 
 macro_rules! wlnerr(
@@ -29,6 +31,7 @@ impl Error {
             Self::ConfigFile(_, _) => true,
             Self::ExpectedError(e) => e.use_stderr(),
             Self::Clap(e) => e.use_stderr(),
+            Self::Toml(_) => true,
         }
     }
 
@@ -66,6 +69,7 @@ impl fmt::Display for Error {
             Self::ConfigFile(path, e) => write!(f, "Failed to parse file '{}', err: {}", path.to_string_lossy(), e),
             Error::ExpectedError(e) => write!(f, "The `configopt` app generated an error, but the actual app did not. This should never happen. err: {}", e),
             Error::Clap(e) => write!(f, "{}", e),
+            Error::Toml(e) => write!(f, "{}", e),
         }
     }
 }

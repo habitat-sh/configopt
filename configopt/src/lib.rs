@@ -65,7 +65,7 @@ pub fn from_toml_file<T: DeserializeOwned>(path: impl AsRef<Path>) -> Result<T> 
     let path = path.as_ref();
     let contents =
         fs::read_to_string(path).map_err(|e| Error::ConfigFile(path.to_path_buf(), e))?;
-    toml::from_str(&contents).map_err(|e| Error::ConfigFile(path.to_path_buf(), e.into()))
+    toml::from_str(&contents).map_err(|e| Error::Toml(e))
 }
 
 /// Set the defaults for a `clap::App`
