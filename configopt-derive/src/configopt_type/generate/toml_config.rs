@@ -82,7 +82,7 @@ pub fn for_struct(fields: &[ParsedField]) -> TokenStream {
                                 }
                             }
                         }
-                        Err(toml::ser::Error::UnsupportedNone) => {
+                        Err(e) if e.to_string() == "unsupported None value" => {
                             result = format!("{}{}# {} =\n\n", result, comment, key);
                         }
                         _ => {}
